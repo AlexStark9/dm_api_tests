@@ -17,8 +17,7 @@ def delete_v1_account_login_all():
     response = requests.request(
         method="DELETE",
         url=url,
-        headers=headers,
-        json=payload
+        headers=headers
     )
 
     return response

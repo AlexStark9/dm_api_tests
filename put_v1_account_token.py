@@ -17,8 +17,7 @@ def put_v1_account_token():
 
     response = requests.request(
         method="PUT", url=url,
-        headers=headers,
-        json=payload
+        headers=headers
     )
 
     return response

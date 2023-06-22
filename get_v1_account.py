@@ -16,8 +16,7 @@ def get_v1_account():
 
     response = requests.request(
         method="GET", url=url,
-        headers=headers,
-        json=payload
+        headers=headers
     )
 
     return response
