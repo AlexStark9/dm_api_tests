@@ -1,14 +1,24 @@
 import requests
 
-url = "http://localhost:5051/v1/account/<uuid>"
 
-payload = {}
-headers = {
-  'X-Dm-Auth-Token': '<string>',
-  'X-Dm-Bb-Render-Mode': '<string>',
-  'Accept': 'text/plain'
-}
+def put_v1_account_token():
+    """
+    Activate registered user
+    :return:
+    """
+    token = None
+    url = f"http://localhost:5051/v1/account/{token}"
 
-response = requests.request("PUT", url, headers=headers, data=payload)
+    headers = {
+        'X-Dm-Auth-Token': '<string>',
+        'X-Dm-Bb-Render-Mode': '<string>',
+        'Accept': 'text/plain'
+    }
 
-print(response.text)
+    response = requests.request(
+        method="PUT", url=url,
+        headers=headers,
+        json=payload
+    )
+
+    return response

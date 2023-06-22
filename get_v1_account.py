@@ -1,14 +1,23 @@
 import requests
 
-url = "http://localhost:5051/v1/account"
 
-payload = {}
-headers = {
-  'X-Dm-Auth-Token': '',
-  'X-Dm-Bb-Render-Mode': '',
-  'Accept': ''
-}
+def get_v1_account():
+    """
+    Get current user
+    :return:
+    """
+    url = "http://localhost:5051/v1/account"
 
-response = requests.request("GET", url, headers=headers, data=payload)
+    headers = {
+        'X-Dm-Auth-Token': '',
+        'X-Dm-Bb-Render-Mode': '',
+        'Accept': ''
+    }
 
-print(response.text)
+    response = requests.request(
+        method="GET", url=url,
+        headers=headers,
+        json=payload
+    )
+
+    return response
