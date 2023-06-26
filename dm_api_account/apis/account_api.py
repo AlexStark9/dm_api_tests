@@ -1,4 +1,3 @@
-import requests
 from requests import Response
 from ..models.registration_model import registration_model
 from ..models.reset_password_model import reset_password_model
@@ -7,11 +6,12 @@ from ..models.change_password_model import change_password_model
 from requests import session
 
 
-class AccounApi:
-    def __int__(self, host, headers=None):
+class AccountApi:
+    def __init__(self, host, headers=None):
         self.host = host
         self.session = session()
-        self.session.headers = headers
+        if headers:
+            self.session.headers = headers
 
     def post_v1_account(self, json: registration_model, **kwargs) -> Response:
         """

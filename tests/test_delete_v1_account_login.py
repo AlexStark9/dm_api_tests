@@ -1,10 +1,10 @@
 import requests
 
 
-def delete_v1_account_login():
+def test_delete_v1_account_login():
     """
     Logout as current user
-    :return: 
+    :return:
     """
     url = "http://localhost:5051/v1/account/login"
 
