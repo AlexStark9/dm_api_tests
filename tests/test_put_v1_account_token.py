@@ -14,7 +14,7 @@ def test_put_v1_account_token():
 
     response = api.account.post_v1_account(json=json)
     time.sleep(2)
-    token = mailhog.get_token_from_last_email()
+    token = mailhog.get_token_from_last_email
     response = api.account.put_v1_account_token(token=token)
     print(response)
     print(response.json())
