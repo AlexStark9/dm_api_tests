@@ -1,3 +1,4 @@
-request
 pytest
-requests~=2.31.0
+requests
+structlog
+curlify
