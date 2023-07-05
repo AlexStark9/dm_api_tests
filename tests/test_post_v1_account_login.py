@@ -4,6 +4,8 @@ import time
 from services.dm_api_account import DmApiAccount
 from services.mailhog import MailhogApi
 import structlog
+from dm_api_account.models.registration_model import RegistrationModel
+from dm_api_account.models.login_credentials_model import LoginCredentials
 
 structlog.configure(
     processors=[
@@ -19,11 +21,11 @@ def test_post_v1_account_login():
     """
     mailhog = MailhogApi(host="http://localhost:5025")
     api = DmApiAccount(host="http://localhost:5051")
-    json = {
-        "login": "User_Test111",
-        "email": "User_Test111@mail.ru",
-        "password": "qwerty12345"
-    }
+    json = RegistrationModel(
+        login="login",
+        email="User_Test11111@mail.ru",
+        password="qwerty12345"
+    )
 
     response = api.account.post_v1_account(json=json)
     assert response.status_code == 201, f'Статус код равен {response.status_code}, а должен быть равен 201!'
@@ -33,10 +35,10 @@ def test_post_v1_account_login():
 
     api = DmApiAccount(host="http://localhost:5051")
 
-    json = {
-        "login": "User_Test111",
-        "password": "qwerty12345",
-        "rememberMe": "<boolean>"
-    }
+    json = LoginCredentials(
+        login='login',
+        password='User_Test11111@mail.ru',
+        rememberMe='boolean'
+    )
 
     response = api.login.post_v1_account_login(json=json)
