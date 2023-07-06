@@ -1,5 +1,4 @@
 from requests import Response
-from requests import session
 from ..models.login_credentials_model import LoginCredentials
 from rest_client.rest_client import Restclient
 from dm_api_account.models.user_envelope import UserEnvelope
@@ -21,7 +20,7 @@ class LoginApi:
 
         response = self.client.post(
             path=f"/v1/account/login",
-            json=json.dict(by_alias=True, exclude_none=True),
+            json=json.model_dump(by_alias=True, exclude_none=True),
             **kwargs
         )
 
@@ -38,6 +37,7 @@ class LoginApi:
             **kwargs
         )
         UserEnvelope(**response.json())
+
         return response
 
     def delete_v1_account_login_all(self, **kwargs) -> Response:

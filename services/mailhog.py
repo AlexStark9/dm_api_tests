@@ -1,6 +1,6 @@
 import json
 
-from requests import session, Response
+from requests import Response
 from rest_client.rest_client import Restclient
 
 
@@ -24,7 +24,6 @@ class MailhogApi:
 
         return response
 
-    @property
     def get_token_from_last_email(self) -> str:
         """
         Get user activation token from last email

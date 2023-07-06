@@ -33,6 +33,6 @@ class User(BaseModel):
     registration: Optional[datetime]
 
 
-class UserEnvelope:
+class UserEnvelope(BaseModel):
     resource: User
     metadata: Optional[StrictStr]

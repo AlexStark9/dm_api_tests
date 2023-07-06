@@ -16,13 +16,13 @@ def test_post_v1_account():
     mailhog = MailhogApi(host="http://localhost:5025")
     api = DmApiAccount(host="http://localhost:5051")
     json = RegistrationModel(
-        login="login2323",
-        email="User_Test2323@mail.ru",
+        login="login1291",
+        email="User_Test1291@mail.ru",
         password="qwerty12345"
     )
 
     response = api.account.post_v1_account(json=json)
     assert response.status_code == 201, f'Статус код равен {response.status_code}, а должен быть равен 201!'
-    time.sleep(2)
-    token = mailhog.get_token_from_last_email
+    time.sleep(3)
+    token = mailhog.get_token_from_last_email()
     response = api.account.put_v1_account_token(token=token)

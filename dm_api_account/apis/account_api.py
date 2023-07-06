@@ -7,6 +7,7 @@ from rest_client.rest_client import Restclient
 from dm_api_account.models.user_envelope import UserEnvelope
 from dm_api_account.models.user_details_envelope import UserDetailsEnvelope
 
+
 class AccountApi:
     def __init__(self, host, headers=None):
         self.host = host
@@ -23,10 +24,10 @@ class AccountApi:
 
         response = self.client.post(
             path=f"/v1/account",
-            json=json.dict(by_alias=True, exclude_none=True),
+            json=json.model_dump(by_alias=True, exclude_none=True),
             **kwargs
         )
-        UserEnvelope(**response.json())
+
         return response
 
     def post_v1_account_password(self, json: ResetPassword, **kwargs) -> Response:
@@ -38,7 +39,7 @@ class AccountApi:
 
         response = self.client.post(
             path=f"/v1/account/password",
-            json=json.dict(by_alias=True, exclude_none=True),
+            json=json.model_dump(by_alias=True, exclude_none=True),
             **kwargs
         )
         UserEnvelope(**response.json())
@@ -53,7 +54,7 @@ class AccountApi:
 
         response = self.client.put(
             path=f"/v1/account/email",
-            json=json.dict(by_alias=True, exclude_none=True),
+            json=json.model_dump(by_alias=True, exclude_none=True),
             **kwargs
         )
         UserEnvelope(**response.json())
@@ -68,7 +69,7 @@ class AccountApi:
 
         response = self.client.put(
             path=f"/v1/account/password",
-            json=json.dict(by_alias=True, exclude_none=True),
+            json=json.model_dump(by_alias=True, exclude_none=True),
             **kwargs
         )
         UserEnvelope(**response.json())
@@ -84,7 +85,7 @@ class AccountApi:
             path=f"/v1/account/{token}",
             **kwargs
         )
-
+       # UserEnvelope(**response.json())
         return response
 
     def get_v1_account(self, **kwargs):

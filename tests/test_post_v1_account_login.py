@@ -19,12 +19,15 @@ def test_post_v1_account_login():
     Authenticate via credentials
     :return:
     """
+    login = 'Login'
+    password = 'password'
+
     mailhog = MailhogApi(host="http://localhost:5025")
     api = DmApiAccount(host="http://localhost:5051")
     json = RegistrationModel(
-        login="login",
+        login=login,
         email="User_Test11111@mail.ru",
-        password="qwerty12345"
+        password=password
     )
 
     response = api.account.post_v1_account(json=json)
@@ -33,11 +36,9 @@ def test_post_v1_account_login():
     token = mailhog.get_token_from_last_email
     response = api.account.put_v1_account_token(token=token)
 
-    api = DmApiAccount(host="http://localhost:5051")
-
     json = LoginCredentials(
-        login='login',
-        password='User_Test11111@mail.ru',
+        login=login,
+        password=password,
         rememberMe='boolean'
     )
 
