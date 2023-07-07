@@ -85,7 +85,7 @@ class AccountApi:
             path=f"/v1/account/{token}",
             **kwargs
         )
-       # UserEnvelope(**response.json())
+        UserEnvelope(**response.json())
         return response
 
     def get_v1_account(self, **kwargs):

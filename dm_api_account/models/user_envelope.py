@@ -15,24 +15,26 @@ class Roles(Enum):
 
 
 class Rating(BaseModel):
-    enabled: StrictBool
-    quality: StrictInt
-    quantity: StrictInt
+    enabled: Optional[StrictBool]
+    quality: Optional[StrictInt]
+    quantity: Optional[StrictInt]
 
 
 class User(BaseModel):
-    login: StrictStr
-    roles: List[Roles]
-    medium_picture_url: Optional[StrictStr] = Field(alias="mediumPictureUrl")
-    small_picture_url: Optional[StrictStr] = Field(alias="smallPictureUrl")
-    status: Optional[StrictStr]
-    rating: Rating
-    online: Optional[datetime]
-    name: Optional[StrictStr]
-    location: Optional[StrictStr]
-    registration: Optional[datetime]
+    login: Optional[StrictStr] = Field(None, description='Login')
+    roles: Optional[List[Roles]] = Field(None, description='Roles')
+    medium_picture_url: Optional[StrictStr] = Field(None, alias='mediumPictureUrl',
+                                                    description='mediumPictureUrl')
+    small_picture_url: Optional[StrictStr] = Field(None, alias='smallPictureUrl',
+                                                   description='smallPictureUrl')
+    status: Optional[StrictStr] = Field(None, description='status')
+    rating: Optional[Rating] = None
+    online: Optional[datetime] = Field(None, description='online')
+    name: Optional[StrictStr] = Field(None, description='name')
+    location: Optional[StrictStr] = Field(None, description='location')
+    registration: Optional[datetime] = Field(None, description='registration')
 
 
 class UserEnvelope(BaseModel):
-    resource: User
-    metadata: Optional[StrictStr]
+    resource: Optional[User]
+    metadata: Optional[StrictStr] = Field(None, description='metadata')
