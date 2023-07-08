@@ -1,24 +1,15 @@
-from typing import List, Optional
-
-from pydantic import BaseModel, StrictStr, Field, StrictBool, StrictInt
-
-
-# {
-#   "message": "string",
-#   "invalidProperties": {
-#     "additionalProp1": ["string"],
-#     "additionalProp2": ["string"],
-#     "additionalProp3": ["string"]
-#   }
-# }
-# Не уверен, что правилльно тут описал
-
-class invalidProperties(BaseModel):
-    additional_prop_1: List[str]
-    additional_prop_2: List[str]
-    additional_prop_3: List[str]
+from __future__ import annotations
+from typing import Optional, Dict, List
+from pydantic import BaseModel, Extra, Field, StrictStr
 
 
 class BadRequestError(BaseModel):
-    message: StrictStr
-    invalid_properties: invalidProperties
+    class Config:
+        extra = Extra.forbid
+
+    message: Optional[StrictStr] = Field(None, description='Client message')
+    invalid_properties: Optional[Dict[str, List[StrictStr]]] = Field(
+        None,
+        alias='invalidProperties',
+        description='Key-value pairs of invalid request properties',
+    )

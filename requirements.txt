@@ -3,3 +3,4 @@ requests
 structlog
 curlify
 pydantic
+pyhamcrest
