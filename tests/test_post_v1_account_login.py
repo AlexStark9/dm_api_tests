@@ -1,11 +1,8 @@
-import time
 from hamcrest import assert_that, has_properties
 from dm_api_account.models.user_envelope import UserRole, Rating
-from services.dm_api_account import DmApiAccount
-from services.mailhog import MailhogApi
+from services.dm_api_account import Facade
 import structlog
-from dm_api_account.models.registration_model import Registration
-from dm_api_account.models.login_credentials_model import LoginCredentials
+
 
 structlog.configure(
     processors=[
@@ -19,32 +16,24 @@ def test_post_v1_account_login():
     Authenticate via credentials
     :return:
     """
-    login = 'Login_5995'
-    password = 'password'
+    api = Facade(host="http://localhost:5051")
+    login = "Login_33"
+    email = "Login_33@email.ru"
+    password = "qwerty12345"
 
-    mailhog = MailhogApi(host="http://localhost:5025")
-    api = DmApiAccount(host="http://localhost:5051")
-    json = Registration(
+    api.account.register_new_user(
         login=login,
-        email="User_Test5995@mail.ru",
+        email=email,
         password=password
     )
 
-    response = api.account.post_v1_account(json=json, status_code=201)
+    api.account.activate_registered_user(login=login)
 
-    time.sleep(3)
-    token = mailhog.get_token_from_last_email()
-    response = api.account.put_v1_account_token(token=token, status_code=200)
-
-    bode = LoginCredentials(
+    response = api.login.login_user(
         login=login,
-        password=password,
-        rememberMe=True
+        password=password
     )
 
-    response = api.login.post_v1_account_login(json=bode)
-
-    # print(json.loads(response.json(by_alias=True, exclude_none=True)))
     assert_that(response.resource, has_properties(
         {
             "login": login,

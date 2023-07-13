@@ -1,10 +1,8 @@
-import time
-from dm_api_account.models.registration_model import Registration
-from services.dm_api_account import DmApiAccount
-from services.mailhog import MailhogApi
+from hamcrest import assert_that, has_properties
+from dm_api_account.models.user_envelope import UserRole, Rating
+from services.dm_api_account import Facade
 import structlog
 from dm_api_account.models.change_password_model import ChangePassword
-import json
 
 structlog.configure(
     processors=[
@@ -14,28 +12,34 @@ structlog.configure(
 
 
 def test_put_v1_account_password():
-    login = 'Login777'
-    password = 'password'
+    api = Facade(host="http://localhost:5051")
+    login = "Login_44"
+    email = "Login_44@email.ru"
+    password = "qwerty12345"
 
-    mailhog = MailhogApi(host="http://localhost:5025")
-    api = DmApiAccount(host="http://localhost:5051")
-    # body = Registration(
-    #     login=login,
-    #     email="User_777@mail.ru",
-    #     password=password
-    # )
-    #
-    # response = api.account.post_v1_account(json=body, status_code=201)
+    api.account.register_new_user(
+        login=login,
+        email=email,
+        password=password
+    )
 
-    # time.sleep(3)
-    token = mailhog.get_token_from_last_email()
-    # response = api.account.put_v1_account_token(token=token, status_code=200)
-    body = ChangePassword(
+    api.account.activate_registered_user(login=login)
+
+    token = api.login.get_auth_token(login=login, password=password)
+
+    json = ChangePassword(
         login=login,
         token=token,
         oldPassword=password,
-        newPassword='qwerty12345'
+        newPassword='12345qwerty11'
     )
 
-    response = api.account.put_v1_account_password(json=body)
-    print(json.loads(response.json(by_alias=True, exclude_none=True)))
+    response = api.account_api.put_v1_account_password(json=json)
+
+    # assert_that(response.resource, has_properties(
+    #     {
+    #         "login": login,
+    #         "roles": [UserRole.GUEST, UserRole.PLAYER],
+    #         "rating": [Rating.enabled, Rating.quality, Rating.quantity]
+    #     }
+    # ))

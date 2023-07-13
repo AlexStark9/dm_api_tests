@@ -1,23 +1,28 @@
-import requests
+from services.dm_api_account import Facade
+import structlog
+
+structlog.configure(
+    processors=[
+        structlog.processors.JSONRenderer(indent=4, sort_keys=True, ensure_ascii=False)
+    ]
+)
 
 
-def delete_v1_account_login_all():
-    """
-    Logout from every device
-    :return:
-    """
-    url = "http://localhost:5051/v1/account/login/all"
+def test_delete_v1_account_login_all():
+    api = Facade(host="http://localhost:5051")
+    login = "Login_47"
+    email = "Login_47@email.ru"
+    password = "qwerty12345"
 
-    headers = {
-        'X-Dm-Auth-Token': '<string>',
-        'X-Dm-Bb-Render-Mode': '<string>',
-        'Accept': 'text/plain'
-    }
-
-    response = requests.request(
-        method="DELETE",
-        url=url,
-        headers=headers
+    api.account.register_new_user(
+        login=login,
+        email=email,
+        password=password
     )
 
-    return response
+    api.account.activate_registered_user(login=login)
+
+    token = api.login.get_auth_token(login=login, password=password)
+    api.login.set_headers(headers=token)
+    api.login.logout_user_from_all_devices()
+

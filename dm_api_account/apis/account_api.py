@@ -94,8 +94,8 @@ class AccountApi:
         )
 
         validate_status_code(response, status_code)
-        if response.status_code == status_code:
-            return UserEnvelope(**response.json())
+        # if response.status_code == status_code:
+        #     return UserEnvelope(**response.json())
         # elif response.status_code == 400:
         #     return BadRequestError(**response.json())
         # else:
@@ -116,8 +116,8 @@ class AccountApi:
         )
 
         validate_status_code(response, status_code)
-        if response.status_code == status_code:
-            return UserEnvelope(**response.json())
+        # if response.status_code == status_code:
+        #     return UserEnvelope(**response.json())
         # elif response.status_code == 400:
         #     return GeneralError(**response.json())
         # elif response.status_code == 410:
@@ -125,7 +125,7 @@ class AccountApi:
         # else:
         return response
 
-    def get_v1_account(self, status_code: int = 200, **kwargs):
+    def get_v1_account(self, status_code: int = 200, **kwargs) -> Response | UserDetailsEnvelope:
         """
         Get current user
         :return:
@@ -136,7 +136,7 @@ class AccountApi:
             **kwargs
         )
         validate_status_code(response, status_code)
-        if response.status_code == status_code:
-            return UserDetailsEnvelope(**response.json())
+        # if response.status_code == status_code:
+        #     return UserDetailsEnvelope(**response.json())
         # else:
         return response
