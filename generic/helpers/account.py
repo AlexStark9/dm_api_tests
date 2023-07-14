@@ -1,4 +1,4 @@
-from dm_api_account.models import Registration
+from dm_api_account.models import Registration, ChangePassword, ResetPassword
 
 
 class Account:
@@ -52,4 +52,41 @@ class Account:
         :return:
         """
         response = self.facade.account_api.get_v1_account(**kwargs)
+        return response
+
+    def change_password(self, login: str, password: str, new_password: str):
+        """
+        Change password for registered user
+        :param new_password: str
+        :param login: str
+        :param password: str
+        :return:
+        """
+        token = self.facade.mailhog.get_token_for_change_password(login=login)
+
+        response = self.facade.account_api.put_v1_account_password(
+            json=ChangePassword(
+                login=login,
+                token=token,
+                oldPassword=password,
+                newPassword=new_password
+            )
+        )
+
+        return response
+
+    def reset_password(self, login: str, email: str):
+        """
+        Reset password for change password
+        :param email: string
+        :param login: str
+        :return:
+        """
+        response = self.facade.account_api.post_v1_account_password(
+            json=ResetPassword(
+                login=login,
+                email=email
+            )
+        )
+
         return response

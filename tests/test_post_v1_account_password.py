@@ -13,8 +13,8 @@ structlog.configure(
 
 def test_post_v1_account_password():
     api = Facade(host="http://localhost:5051")
-    login = "Login_43"
-    email = "Login_43@email.ru"
+    login = "Login_474"
+    email = "Login_474@email.ru"
     password = "qwerty12345"
 
     api.account.register_new_user(
@@ -25,12 +25,10 @@ def test_post_v1_account_password():
 
     api.account.activate_registered_user(login=login)
 
-    json = ResetPassword(
+    api.account.reset_password(
         login=login,
         email=email
     )
-
-    response = api.account_api.post_v1_account_password(json=json)
 
     # assert_that(response.resource, has_properties(
     #     {

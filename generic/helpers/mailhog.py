@@ -66,3 +66,22 @@ class MailhogApi:
         time.sleep(3)
         attempt -= 1
         return self.get_token_by_login(login=login, attempt=attempt - 1)
+
+    def get_token_for_change_password(self, login: str, attempt=5):
+        """
+        Get token for change password
+        :param login: str
+        :param attempt: int
+        :return: token
+        """
+        if attempt == 0:
+            raise AssertionError(f'Не удалось получить письмо с логином {login}')
+        emails = self.get_api_v2_messages(limit=100).json()['items']
+        for email in emails:
+            user_data = json.loads(email['Content']['Body'])
+            if login == user_data.get('Login'):
+                token = user_data['ConfirmationLinkUri'].split('/')[-1]
+                return token
+        time.sleep(3)
+        attempt -= 1
+        return self.get_token_by_login(login=login, attempt=attempt - 1)

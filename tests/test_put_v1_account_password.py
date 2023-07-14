@@ -1,4 +1,6 @@
 from hamcrest import assert_that, has_properties
+
+from dm_api_account.models import ResetPassword
 from dm_api_account.models.user_envelope import UserRole, Rating
 from services.dm_api_account import Facade
 import structlog
@@ -13,9 +15,10 @@ structlog.configure(
 
 def test_put_v1_account_password():
     api = Facade(host="http://localhost:5051")
-    login = "Login_44"
-    email = "Login_44@email.ru"
+    login = "Login_50"
+    email = "Login_50@email.ru"
     password = "qwerty12345"
+    new_password = "12345qwerty11"
 
     api.account.register_new_user(
         login=login,
@@ -25,16 +28,16 @@ def test_put_v1_account_password():
 
     api.account.activate_registered_user(login=login)
 
-    token = api.login.get_auth_token(login=login, password=password)
-
-    json = ChangePassword(
+    api.account.reset_password(
         login=login,
-        token=token,
-        oldPassword=password,
-        newPassword='12345qwerty11'
+        email=email
     )
 
-    response = api.account_api.put_v1_account_password(json=json)
+    api.account.change_password(
+        login=login,
+        password=password,
+        new_password=new_password
+    )
 
     # assert_that(response.resource, has_properties(
     #     {

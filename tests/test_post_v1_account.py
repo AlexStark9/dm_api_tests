@@ -12,8 +12,8 @@ structlog.configure(
 
 def test_post_v1_account():
     api = Facade(host="http://localhost:5051")
-    login = "Login_33"
-    email = "Login_33@email.ru"
+    login = "Login_474"
+    email = "Login_474@email.ru"
     password = "qwerty12345"
 
     api.account.register_new_user(
