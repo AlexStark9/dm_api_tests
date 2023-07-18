@@ -11,6 +11,7 @@ structlog.configure(
 
 def test_get_v1_account():
     api = Facade(host="http://localhost:5051")
-    token = api.login.get_auth_token(login="Login_32", password="qwerty12345")
-    api.account.set_headers(headers=token)
-    api.account.get_current_user_info()
+    token = api.login.get_auth_token(login="Login_616211", password="qwerty12345")
+    # api.account.set_headers(headers=token)
+    # api.account.get_current_user_info()
+    print(token['X-Dm-Auth-Token'])
