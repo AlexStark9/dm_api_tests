@@ -1,3 +1,5 @@
+import time
+
 from hamcrest import assert_that, has_properties
 
 from dm_api_account.models import ResetPassword
@@ -15,8 +17,8 @@ structlog.configure(
 
 def test_put_v1_account_password():
     api = Facade(host="http://localhost:5051")
-    login = "Login_50"
-    email = "Login_50@email.ru"
+    login = "Login_6111126211"
+    email = "Login_6111126211@email.ru"
     password = "qwerty12345"
     new_password = "12345qwerty11"
 
@@ -28,10 +30,17 @@ def test_put_v1_account_password():
 
     api.account.activate_registered_user(login=login)
 
+    token = api.login.get_auth_token(
+        login=login,
+        password=password
+    )
+    api.account.set_headers(headers=token)
+
     api.account.reset_password(
         login=login,
         email=email
     )
+    time.sleep(3)
 
     api.account.change_password(
         login=login,

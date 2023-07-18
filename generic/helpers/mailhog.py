@@ -44,7 +44,7 @@ class MailhogApi:
         :return: token
         """
         email = self.get_api_v2_messages(limit=1).json()
-        token_url = json.loads(email['items'][0]['Content']['Body'])['ConfirmationLinkUrl']
+        token_url = json.loads(email['items'][0]['Content']['Body'])['ConfirmationLinkUri']
         token = token_url.split('/')[-1]
         return token
 
@@ -84,4 +84,4 @@ class MailhogApi:
                 return token
         time.sleep(3)
         attempt -= 1
-        return self.get_token_by_login(login=login, attempt=attempt - 1)
+        return self.get_token_for_change_password(login=login, attempt=attempt - 1)

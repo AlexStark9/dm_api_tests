@@ -54,7 +54,7 @@ class Account:
         response = self.facade.account_api.get_v1_account(**kwargs)
         return response
 
-    def change_password(self, login: str, password: str, new_password: str):
+    def change_password(self, login: str, password: str, new_password: str, **kwargs):
         """
         Change password for registered user
         :param new_password: str
@@ -62,14 +62,14 @@ class Account:
         :param password: str
         :return:
         """
-        token = self.facade.mailhog.get_token_for_change_password(login=login)
+        token = self.facade.mailhog.get_token_for_change_password(login)
 
         response = self.facade.account_api.put_v1_account_password(
             json=ChangePassword(
                 login=login,
                 token=token,
                 oldPassword=password,
-                newPassword=new_password
+                newPassword=new_password,
             )
         )
 
