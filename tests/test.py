@@ -1,5 +1,4 @@
 import time
-
 from generic.helpers.dm_db import DmDatabase
 from services.dm_api_account import Facade
 import structlog
@@ -11,12 +10,12 @@ structlog.configure(
 )
 
 
-def test_post_v1_account():
+def test_db():
     api = Facade(host="http://localhost:5051")
-    login = "Login_41743"
-    email = "Login_41743@email.ru"
+    login = "Login_41"
+    email = "Login_41@email.ru"
     password = "qwerty12345"
-    db = DmDatabase(user='postgres', password='admin', host='localhost:5432', database='dm3.5')\
+    db = DmDatabase(user='postgres', password='admin', host='localhost:5432', database='dm3.5')
 
     db.delete_user_by_login(login=login)
     dataset = db.get_user_by_login(login=login)
@@ -35,7 +34,8 @@ def test_post_v1_account():
         assert row['Login'] == login, f'User {login} not registered'
         assert row['Activated'] is False, f'User {login} was activated'
 
-    api.account.activate_registered_user(login=login)
+    # api.account.activate_registered_user(login=login)
+    db.activate_user_by_login(login=login)
 
     time.sleep(3)
 

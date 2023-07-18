@@ -54,4 +54,4 @@ def test_put_v1_account_password():
     #         "roles": [UserRole.GUEST, UserRole.PLAYER],
     #         "rating": [Rating.enabled, Rating.quality, Rating.quantity]
     #     }
-    # ))1
+    # ))

@@ -85,3 +85,7 @@ class MailhogApi:
         time.sleep(3)
         attempt -= 1
         return self.get_token_for_change_password(login=login, attempt=attempt - 1)
+
+    def delete_all_messages(self):
+        response = self.client.delete(path='/api/v1/messages')
+        return response
