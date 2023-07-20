@@ -1,7 +1,6 @@
-import time
-from generic.helpers.dm_db import DmDatabase
-from services.dm_api_account import Facade
 import structlog
+from generic.helpers.orm_db import OrmDatabase
+from generic.helpers.orm_models import User
 
 structlog.configure(
     processors=[
@@ -10,39 +9,18 @@ structlog.configure(
 )
 
 
-def test_db():
-    api = Facade(host="http://localhost:5051")
-    login = "Login_41"
-    email = "Login_41@email.ru"
-    password = "qwerty12345"
-    db = DmDatabase(user='postgres', password='admin', host='localhost:5432', database='dm3.5')
+def test_orm():
+    user = 'postgres'
+    password = 'admin'
+    host = 'localhost:5432'
+    database = 'dm3.5'
+    orm = OrmDatabase(user=user, password=password, host=host, database=database)
 
-    db.delete_user_by_login(login=login)
-    dataset = db.get_user_by_login(login=login)
-    assert len(dataset) == 0
-
-    api.mailhog.delete_all_messages()
-
-    api.account.register_new_user(
-        login=login,
-        email=email,
-        password=password
-    )
-
-    dataset = db.get_user_by_login(login=login)
+    dataset = orm.get_users_by_login(login='User_9')
+    row: User
     for row in dataset:
-        assert row['Login'] == login, f'User {login} not registered'
-        assert row['Activated'] is False, f'User {login} was activated'
+        print(row.Name)
+        print(row.Login)
+        print(row.Email)
 
-    # api.account.activate_registered_user(login=login)
-    db.activate_user_by_login(login=login)
-
-    time.sleep(3)
-
-    dataset = db.get_user_by_login(login=login)
-    for row in dataset:
-        assert row['Activated'] is True, f'User {login} not activated'
-
-    token = api.login.get_auth_token(login=login, password=password)
-    api.account.set_headers(headers=token)
-    api.account.get_current_user_info()
+    orm.db.close_connection()

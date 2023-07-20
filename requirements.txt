@@ -5,3 +5,4 @@ curlify
 pydantic
 pyhamcrest
 records
+sqlalchemy
