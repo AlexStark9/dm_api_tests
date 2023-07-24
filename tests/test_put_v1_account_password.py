@@ -1,48 +1,34 @@
 import time
 
-from hamcrest import assert_that, has_properties
 
-from dm_api_account.models import ResetPassword
-from dm_api_account.models.user_envelope import UserRole, Rating
-from services.dm_api_account import Facade
-import structlog
-from dm_api_account.models.change_password_model import ChangePassword
+def test_put_v1_account_password(dm_api_facade, prepare_user, status_code=201):
+    login = prepare_user.login
+    email = prepare_user.email
+    password = prepare_user.password
+    new_password = 'qwerty12345'
 
-structlog.configure(
-    processors=[
-        structlog.processors.JSONRenderer(indent=4, sort_keys=True, ensure_ascii=False)
-    ]
-)
-
-
-def test_put_v1_account_password():
-    api = Facade(host="http://localhost:5051")
-    login = "Login_6111126211"
-    email = "Login_6111126211@email.ru"
-    password = "qwerty12345"
-    new_password = "12345qwerty11"
-
-    api.account.register_new_user(
+    dm_api_facade.account.register_new_user(
         login=login,
         email=email,
-        password=password
+        password=password,
+        status_code=status_code
     )
 
-    api.account.activate_registered_user(login=login)
+    dm_api_facade.account.activate_registered_user(login=login)
 
-    token = api.login.get_auth_token(
+    token = dm_api_facade.login.get_auth_token(
         login=login,
         password=password
     )
-    api.account.set_headers(headers=token)
+    dm_api_facade.account.set_headers(headers=token)
 
-    api.account.reset_password(
+    dm_api_facade.account.reset_password(
         login=login,
         email=email
     )
     time.sleep(3)
 
-    api.account.change_password(
+    dm_api_facade.account.change_password(
         login=login,
         password=password,
         new_password=new_password

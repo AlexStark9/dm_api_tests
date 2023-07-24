@@ -1,48 +1,91 @@
+import random
 import time
-from generic.helpers.orm_db import OrmDatabase
-from services.dm_api_account import Facade
-import structlog
-
-structlog.configure(
-    processors=[
-        structlog.processors.JSONRenderer(indent=4, sort_keys=True, ensure_ascii=False)
-    ]
-)
+from string import ascii_letters, digits
+import pytest
+from hamcrest import assert_that, has_entries
 
 
-def test_post_v1_account():
-    api = Facade(host="http://localhost:5051")
-    login = "Login_41"
-    email = "Login_41@email.ru"
-    password = "qwerty12345"
-    db = OrmDatabase(user='postgres', password='admin', host='localhost:5432', database='dm3.5')
+def random_string(begin, end):
+    symbol = ascii_letters + digits
+    string = ''
+    for _ in range(random.randint(begin, end)):
+        string += random.choice(symbol)
+    return string
 
-    db.delete_user_by_login(login=login)
-    dataset = db.get_users_by_login(login=login)
+
+@pytest.mark.parametrize('login, email, password, status_code, check', [
+    (random_string(5, 15),
+     random_string(5, 15) + '@mail.com',
+     random_string(6, 20), 201, 'Success'
+     ),
+    (random_string(5, 15),
+     random_string(5, 15) + '@mail.com',
+     random_string(1, 5), 400, {'Password': ['Short']}
+     ),
+    (random_string(1, 1),
+     random_string(5, 15) + '@mail.com',
+     random_string(6, 20), 400, {'Login': ['Short']}
+     ),
+    (random_string(5, 15),
+     random_string(5, 15) + '@',
+     random_string(5, 20), 400, {'Email': ['Invalid']}
+     ),
+    (random_string(5, 15),
+     random_string(5, 15) + 'mail.com',
+     random_string(6, 20), 400, {'Email': ['Invalid']}
+     ),
+])
+def test_post_v1_account(dm_api_facade, dm_db, login, email, password, status_code, check):
+    dm_db.delete_user_by_login(login=login)
+    dataset = dm_db.get_users_by_login(login=login)
     assert len(dataset) == 0
-
-    api.mailhog.delete_all_messages()
-
-    api.account.register_new_user(
+    dm_api_facade.mailhog.delete_all_messages()
+    response = dm_api_facade.account.register_new_user(
         login=login,
         email=email,
-        password=password
+        password=password,
+        status_code=status_code
     )
+    if status_code == 201:
+        dataset = dm_db.get_users_by_login(login=login)
+        for row in dataset:
+            assert_that(row, has_entries(
+                {
+                    'Login': login,
+                    'Activated': False
 
-    dataset = db.get_users_by_login(login=login)
-    for row in dataset:
-        assert row['Login'] == login, f'User {login} not registered'
-        assert row['Activated'] is False, f'User {login} was activated'
+                }
+            ))
 
-    # api.account.activate_registered_user(login=login)
-    db.activate_user_by_login(login=login)
+        # api.account.activate_registered_user(login=login)
+        dm_db.activate_user_by_login(login=login)
 
-    time.sleep(3)
+        time.sleep(3)
 
-    dataset = db.get_users_by_login(login=login)
-    for row in dataset:
-        assert row['Activated'] is True, f'User {login} not activated'
+        dataset = dm_db.get_users_by_login(login=login)
+        for row in dataset:
+            assert row['Activated'] is True, f'User {login} not activated'
 
-    token = api.login.get_auth_token(login=login, password=password)
-    api.account.set_headers(headers=token)
-    api.account.get_current_user_info()
+        token = dm_api_facade.login.get_auth_token(login=login, password=password)
+        dm_api_facade.account.set_headers(headers=token)
+        dm_api_facade.account.get_current_user_info()
+    elif status_code != 201 and len(password) <= 5:
+        print(response.json()['errors'], has_entries(
+            {
+                'login': login,
+                'Activated': False,
+                'password': check['Password']
+            }
+        ))
+    elif status_code != 201 and len(login) <= 1:
+        print(response.json()['errors'], has_entries(
+            {
+                'login': check['Login']
+            }
+            ))
+    else:
+        assert_that(response.json()['errors'], has_entries(
+            {
+                'Email': check['Email']
+            }
+        ))

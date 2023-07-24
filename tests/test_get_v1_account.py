@@ -1,17 +1,5 @@
-from requests import Response
-from services.dm_api_account import Facade
-import structlog
-
-structlog.configure(
-    processors=[
-        structlog.processors.JSONRenderer(indent=4, sort_keys=True, ensure_ascii=False)
-    ]
-)
-
-
-def test_get_v1_account():
-    api = Facade(host="http://localhost:5051")
-    token = api.login.get_auth_token(login="Login_616211", password="qwerty12345")
-    # api.account.set_headers(headers=token)
-    # api.account.get_current_user_info()
+def test_get_v1_account(dm_api_facade):
+    token = dm_api_facade.login.get_auth_token(login="Login_616211", password="qwerty12345")
+    dm_api_facade.account.set_headers(headers=token)
+    dm_api_facade.account.get_current_user_info()
     print(token['X-Dm-Auth-Token'])

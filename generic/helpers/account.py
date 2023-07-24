@@ -14,9 +14,10 @@ class Account:
         """
         self.facade.account_api.client.session.headers.update(headers)
 
-    def register_new_user(self, login: str, email: str, password: str):
+    def register_new_user(self, login: str, email: str, password: str, status_code: int):
         """
         Register new user
+        :param status_code: int
         :param login: str
         :param email: str
         :param password: str
@@ -27,7 +28,8 @@ class Account:
                 login=login,
                 email=email,
                 password=password
-            )
+            ),
+            status_code=status_code
         )
 
         return response

@@ -11,7 +11,7 @@ class AccountApi:
         if headers:
             self.client.session.headers.update(headers)
 
-    def post_v1_account(self, json: Registration, status_code: int = 201,
+    def post_v1_account(self, json: Registration, status_code: int,
                         **kwargs) -> BadRequestError | Response:
         """
         Register new user

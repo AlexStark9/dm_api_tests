@@ -1,28 +1,17 @@
-from services.dm_api_account import Facade
-import structlog
+def test_delete_v1_account_login_all(dm_api_facade, prepare_user, status_code=201):
+    login = prepare_user.login
+    email = prepare_user.email
+    password = prepare_user.password
 
-structlog.configure(
-    processors=[
-        structlog.processors.JSONRenderer(indent=4, sort_keys=True, ensure_ascii=False)
-    ]
-)
-
-
-def test_delete_v1_account_login_all():
-    api = Facade(host="http://localhost:5051")
-    login = "Login_47"
-    email = "Login_47@email.ru"
-    password = "qwerty12345"
-
-    api.account.register_new_user(
+    dm_api_facade.account.register_new_user(
         login=login,
         email=email,
-        password=password
+        password=password,
+        status_code=status_code
     )
 
-    api.account.activate_registered_user(login=login)
+    dm_api_facade.account.activate_registered_user(login=login)
 
-    token = api.login.get_auth_token(login=login, password=password)
-    api.login.set_headers(headers=token)
-    api.login.logout_user_from_all_devices()
-
+    token = dm_api_facade.login.get_auth_token(login=login, password=password)
+    dm_api_facade.login.set_headers(headers=token)
+    dm_api_facade.login.logout_user_from_all_devices()
