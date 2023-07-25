@@ -13,7 +13,7 @@ class LoginApi:
             self.client.session.headers.update(headers)
 
     def post_v1_account_login(self, json: LoginCredentials,
-                              status_code: int = 200) -> UserEnvelope | BadRequestError | GeneralError | Response:
+                              status_code: int = 200, **kwargs) -> UserEnvelope | BadRequestError | GeneralError | Response:
         """
         Authenticate via credentials
         :param status_code: int

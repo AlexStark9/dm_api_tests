@@ -20,19 +20,19 @@ def random_string(begin, end):
      ),
     (random_string(5, 15),
      random_string(5, 15) + '@mail.com',
-     random_string(1, 5), 400, {'Password': ['Short']}
+     random_string(1, 5), 400, {"Password": ["Short"]}
      ),
     (random_string(1, 1),
      random_string(5, 15) + '@mail.com',
-     random_string(6, 20), 400, {'Login': ['Short']}
+     random_string(6, 20), 400, {"Login": ["Short"]}
      ),
     (random_string(5, 15),
      random_string(5, 15) + '@',
-     random_string(5, 20), 400, {'Email': ['Invalid']}
+     random_string(5, 20), 400, {"Email": ['Invalid']}
      ),
     (random_string(5, 15),
      random_string(5, 15) + 'mail.com',
-     random_string(6, 20), 400, {'Email': ['Invalid']}
+     random_string(6, 20), 400, {"Email": ['Invalid']}
      ),
 ])
 def test_post_v1_account(dm_api_facade, dm_db, login, email, password, status_code, check):
@@ -69,23 +69,22 @@ def test_post_v1_account(dm_api_facade, dm_db, login, email, password, status_co
         token = dm_api_facade.login.get_auth_token(login=login, password=password)
         dm_api_facade.account.set_headers(headers=token)
         dm_api_facade.account.get_current_user_info()
-    elif status_code != 201 and len(password) <= 5:
-        print(response.json()['errors'], has_entries(
-            {
-                'login': login,
-                'Activated': False,
-                'password': check['Password']
-            }
-        ))
-    elif status_code != 201 and len(login) <= 1:
-        print(response.json()['errors'], has_entries(
-            {
-                'login': check['Login']
-            }
-            ))
     else:
-        assert_that(response.json()['errors'], has_entries(
-            {
-                'Email': check['Email']
-            }
-        ))
+        if status_code != 201 and len(password) <= 5:
+            response.json()['errors'], has_entries(
+                {
+                    'Password': check
+                }
+            )
+        elif status_code != 201 and len(login) <= 1:
+            response.json()['errors'], has_entries(
+                {
+                    'Login': check
+                }
+            )
+        else:
+            assert_that(response.json()['errors'], has_entries(
+                {
+                    'Email': check['Email']
+                }
+            ))

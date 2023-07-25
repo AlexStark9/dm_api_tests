@@ -69,8 +69,8 @@ class BbParseMode(Enum):
 
 
 class UserRole(Enum):
-    guest = 'Guest'
-    player = 'Player'
+    GUEST = 'Guest'
+    PLAYER = 'Player'
     administrator = 'Administrator'
     nanny_moderator = 'NannyModerator'
     regular_moderator = 'RegularModerator'

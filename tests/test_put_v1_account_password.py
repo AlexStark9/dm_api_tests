@@ -1,4 +1,6 @@
 import time
+from hamcrest import assert_that, has_properties
+from dm_api_account.models.user_envelope import UserRole, Rating
 
 
 def test_put_v1_account_password(dm_api_facade, prepare_user, status_code=201):
@@ -28,16 +30,15 @@ def test_put_v1_account_password(dm_api_facade, prepare_user, status_code=201):
     )
     time.sleep(3)
 
-    dm_api_facade.account.change_password(
+    response = dm_api_facade.account.change_password(
         login=login,
         password=password,
         new_password=new_password
     )
 
-    # assert_that(response.resource, has_properties(
-    #     {
-    #         "login": login,
-    #         "roles": [UserRole.GUEST, UserRole.PLAYER],
-    #         "rating": [Rating.enabled, Rating.quality, Rating.quantity]
-    #     }
-    # ))
+    assert_that(response.resource, has_properties(
+        {
+            "login": login,
+            "roles": [UserRole.GUEST, UserRole.PLAYER]
+        }
+    ))

@@ -40,6 +40,6 @@ class DbClient:
 
 
 if __name__ == "__main__":
-    db = DbClient(user='postgres', password='admin', host='localhost:5432', database='dm3.5')
+    db = DbClient(user='postgres', password='admin', host='5.63.153.31:5432', database='dm3.5')
     query = 'select * from "public"."Users"'
     db.send_query(query)

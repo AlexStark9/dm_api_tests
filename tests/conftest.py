@@ -53,17 +53,17 @@ def generating_invalid_test_data():
 
 @pytest.fixture
 def mailhog():
-    return MailhogApi(host='http://localhost:5025')
+    return MailhogApi(host='http://5.63.153.31:5025')
 
 
 @pytest.fixture
 def dm_api_facade(mailhog):
-    return Facade(host="http://localhost:5051", mailhog=mailhog)
+    return Facade(host="http://5.63.153.31:5051", mailhog=mailhog)
 
 
 @pytest.fixture
 def dm_db():
-    db = OrmDatabase(user='postgres', password='admin', host='localhost:5432', database='dm3.5')
+    db = OrmDatabase(user='postgres', password='admin', host='5.63.153.31:5432', database='dm3.5')
     return db
 
 

@@ -1,8 +1,8 @@
+import json
+
 from hamcrest import assert_that, has_properties
 from dm_api_account.models.user_envelope import UserRole, Rating
-from services.dm_api_account import Facade
 import structlog
-from dm_api_account.models.reset_password_model import ResetPassword
 
 structlog.configure(
     processors=[
@@ -25,15 +25,14 @@ def test_post_v1_account_password(dm_api_facade, prepare_user, status_code=201):
 
     dm_api_facade.account.activate_registered_user(login=login)
 
-    dm_api_facade.account.reset_password(
+    response = dm_api_facade.account.reset_password(
         login=login,
         email=email
     )
-
-    # assert_that(response.resource, has_properties(
-    #     {
-    #         "login": login,
-    #         "roles": [UserRole.GUEST, UserRole.PLAYER],
-    #         "rating": [Rating.enabled, Rating.quality, Rating.quantity]
-    #     }
-    # ))
+    # print(json.loads(response.json(by_alias=True, exclude_none=True)))
+    assert_that(response.resource, has_properties(
+        {
+            "login": login,
+            "roles": [UserRole.GUEST, UserRole.PLAYER]
+        }
+    ))

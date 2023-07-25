@@ -1,3 +1,7 @@
+from hamcrest import assert_that, has_properties
+from dm_api_account.models.user_envelope import UserRole, Rating
+
+
 def test_post_v1_account_login(dm_api_facade, prepare_user, status_code=201):
     """
     Authenticate via credentials
@@ -16,15 +20,14 @@ def test_post_v1_account_login(dm_api_facade, prepare_user, status_code=201):
 
     dm_api_facade.account.activate_registered_user(login=login)
 
-    dm_api_facade.login.login_user(
+    response = dm_api_facade.login.login_user(
         login=login,
         password=password
     )
 
-    # assert_that(response.resource, has_properties(
-    #     {
-    #         "login": login,
-    #         "roles": [UserRole.GUEST],
-    #         "rating": [Rating.enabled, Rating.quality, Rating.quantity]
-    #     }
-    # ))
+    assert_that(response.resource, has_properties(
+        {
+            "login": login,
+            "roles": [UserRole.GUEST, UserRole.PLAYER]
+        }
+    ))
