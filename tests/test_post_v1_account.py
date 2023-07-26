@@ -64,27 +64,10 @@ def test_post_v1_account(dm_api_facade, dm_db, login, email, password, status_co
 
         dataset = dm_db.get_users_by_login(login=login)
         for row in dataset:
-            assert row['Activated'] is True, f'User {login} not activated'
+            assert row.Activated is True, f'User {login} not activated'
 
         token = dm_api_facade.login.get_auth_token(login=login, password=password)
         dm_api_facade.account.set_headers(headers=token)
         dm_api_facade.account.get_current_user_info()
     else:
-        if status_code != 201 and len(password) <= 5:
-            response.json()['errors'], has_entries(
-                {
-                    'Password': check
-                }
-            )
-        elif status_code != 201 and len(login) <= 1:
-            response.json()['errors'], has_entries(
-                {
-                    'Login': check
-                }
-            )
-        else:
-            assert_that(response.json()['errors'], has_entries(
-                {
-                    'Email': check['Email']
-                }
-            ))
+        assert_that(response.json()['errors'], has_entries(check))

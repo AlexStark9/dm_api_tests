@@ -33,6 +33,11 @@ def test_post_v1_account_password(dm_api_facade, prepare_user, status_code=201):
     assert_that(response.resource, has_properties(
         {
             "login": login,
+            "rating": Rating(
+                enabled=True,
+                quality=0,
+                quantity=0
+            ),
             "roles": [UserRole.GUEST, UserRole.PLAYER]
         }
     ))
