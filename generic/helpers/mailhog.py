@@ -19,7 +19,7 @@ from rest_client.rest_client import Restclient
 
 
 class MailhogApi:
-    def __init__(self, host='http://5.63.153.31:5025'):
+    def __init__(self, host):
         self.host = host
         self.client = Restclient(host=host)
 

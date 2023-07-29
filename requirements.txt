@@ -6,3 +6,5 @@ pydantic
 pyhamcrest
 records
 sqlalchemy
+vyper-config
+pathspec
