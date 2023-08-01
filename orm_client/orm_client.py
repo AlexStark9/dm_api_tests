@@ -1,5 +1,5 @@
 import uuid
-import records
+import allure
 import structlog
 from sqlalchemy import create_engine
 
@@ -10,8 +10,22 @@ structlog.configure(
 )
 
 
+def allure_attach(fn):
+    def wrapper(*args, **kwargs):
+        query = kwargs.get('query')
+        # query = query.compile(compile_kwargs={"literal_binds": True})
+        # AttributeError: 'NoneType' object has no attribute 'compile' HELP ?
+        allure.attach(str(query), name='SQL_query', attachment_type=allure.attachment_type.TEXT)
+        dataset = fn(*args, **kwargs)
+        if dataset is not None:
+            allure.attach(str(dataset), name='dataset', attachment_type=allure.attachment_type.TEXT)
+        return dataset
+
+    return wrapper
+
+
 class OrmClient:
-    def __init__(self, user, password, host, database,  isolation_level='AUTOCOMMIT'):
+    def __init__(self, user, password, host, database, isolation_level='AUTOCOMMIT'):
         connection_string = f'postgresql://{user}:{password}@{host}/{database}'
         print(connection_string)
         self.engine = create_engine(connection_string, isolation_level=isolation_level)
@@ -21,6 +35,7 @@ class OrmClient:
     def close_connection(self):
         self.db.close()
 
+    @allure_attach
     def send_query(self, query):
         print(query)
         log = self.log.bind(event_id=str(uuid.uuid4()))
@@ -36,6 +51,7 @@ class OrmClient:
         )
         return result
 
+    @allure_attach
     def send_bulk_query(self, query):
         print(query)
         log = self.log.bind(event_id=str(uuid.uuid4()))

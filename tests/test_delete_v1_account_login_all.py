@@ -1,3 +1,9 @@
+import allure
+
+
+@allure.suite("Тесты на проверку метода DELETE{host}/v1/account")
+@allure.sub_suite("Позитивные проверки")
+@allure.title("Проверка выхода из системы со всех устройств")
 def test_delete_v1_account_login_all(dm_api_facade, prepare_user, status_code=201):
     login = prepare_user.login
     email = prepare_user.email

@@ -1,3 +1,4 @@
+import allure
 from requests import Response
 from ..models import *
 from rest_client.rest_client import Restclient
@@ -19,12 +20,12 @@ class AccountApi:
         :param json registration_model
         :return:
         """
-
-        response = self.client.post(
-            path=f"/v1/account",
-            json=validate_request_json(json),
-            **kwargs
-        )
+        with allure.step("Регистрация нового пользователя"):
+            response = self.client.post(
+                path=f"/v1/account",
+                json=validate_request_json(json),
+                **kwargs
+            )
 
         validate_status_code(response, status_code)
         # if response.status_code == 400:
@@ -109,11 +110,11 @@ class AccountApi:
         :param token: str
         :return:
         """
-
-        response = self.client.put(
-            path=f"/v1/account/{token}",
-            **kwargs
-        )
+        with allure.step("Регистрация нового пользователя"):
+            response = self.client.put(
+                path=f"/v1/account/{token}",
+                **kwargs
+            )
 
         validate_status_code(response, status_code)
         if response.status_code == status_code:

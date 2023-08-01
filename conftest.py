@@ -4,6 +4,7 @@ import structlog
 from vyper import v
 from pathlib import Path
 from string import ascii_letters, digits
+from generic.assertions.post_v1_account import AssertionsPostV1Account
 from generic.helpers.orm_db import OrmDatabase
 from services.dm_api_account import Facade
 from collections import namedtuple
@@ -64,6 +65,11 @@ def dm_api_facade(mailhog):
         host=v.get('service.dm_api_account'),
         mailhog=mailhog
     )
+
+
+@pytest.fixture()
+def assertion(dm_db):
+    return AssertionsPostV1Account(dm_db)
 
 
 @pytest.fixture

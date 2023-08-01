@@ -1,6 +1,10 @@
 import time
+import allure
 
 
+@allure.suite("Тесты на проверку метода GET{host}/v1/account")
+@allure.sub_suite("Позитивные проверки")
+@allure.title("Проверка вывода информации о пользователе")
 def test_get_v1_account(dm_api_facade, prepare_user, dm_db, status_code=201):
     login = prepare_user.login
     password = prepare_user.password

@@ -1,9 +1,12 @@
+import allure
 from hamcrest import assert_that, has_properties
-import json
 from dm_api_account.models import ChangeEmail
 from dm_api_account.models.user_envelope import UserRole, Rating
 
 
+@allure.suite("Тесты на проверку метода PUT{host}/v1/account")
+@allure.sub_suite("Позитивные проверки")
+@allure.title("Проверка смены email")
 def test_put_v1_account_email(dm_api_facade, prepare_user, status_code=201):
     login = prepare_user.login
     email = prepare_user.email

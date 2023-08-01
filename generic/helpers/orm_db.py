@@ -1,4 +1,6 @@
 from typing import List
+
+import allure
 from sqlalchemy import select, delete, update
 from generic.helpers.orm_models import User
 from orm_client.orm_client import OrmClient
@@ -13,9 +15,10 @@ class OrmDatabase:
         Get all users
         :return:
         """
-        query = select(User)
-        dataset = self.db.send_query(query)
-        return dataset
+        with allure.step("Получаем всех пользователей"):
+            query = select(User)
+            dataset = self.db.send_query(query)
+            return dataset
 
     def get_users_by_login(self, login: str) -> List[User]:
         """
@@ -23,11 +26,12 @@ class OrmDatabase:
         :param login: str
         :return:
         """
-        query = select(User).where(
-            User.Login == login
-        )
-        dataset = self.db.send_query(query)
-        return dataset
+        with allure.step("Получаем пользователя по логину"):
+            query = select(User).where(
+                User.Login == login
+            )
+            dataset = self.db.send_query(query)
+            return dataset
 
     def delete_user_by_login(self, login: str):
         """
@@ -35,9 +39,10 @@ class OrmDatabase:
         :param login: str
         :return:
         """
-        query = delete(User).where(User.Login == login)
-        dataset = self.db.send_bulk_query(query=query)
-        return dataset
+        with allure.step("Разлогиниваем пользователя по логину"):
+            query = delete(User).where(User.Login == login)
+            dataset = self.db.send_bulk_query(query=query)
+            return dataset
 
     def activate_user_by_login(self, login):
         """
@@ -45,6 +50,7 @@ class OrmDatabase:
         :param login: str
         :return:
         """
-        query = update(User).values({User.Activated: True}).where(User.Login == login)
-        dataset = self.db.send_bulk_query(query=query)
-        return dataset
+        with allure.step("Активируем пользователя по логину через db"):
+            query = update(User).values({User.Activated: True}).where(User.Login == login)
+            dataset = self.db.send_bulk_query(query=query)
+            return dataset

@@ -8,3 +8,4 @@ records
 sqlalchemy
 vyper-config
 pathspec
+allure-pytest

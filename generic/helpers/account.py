@@ -1,3 +1,5 @@
+import allure
+
 from dm_api_account.models import Registration, ChangePassword, ResetPassword
 
 
@@ -53,8 +55,9 @@ class Account:
         :param kwargs:
         :return:
         """
-        response = self.facade.account_api.get_v1_account(**kwargs)
-        return response
+        with allure.step("Вывод информации о пользователе"):
+            response = self.facade.account_api.get_v1_account(**kwargs)
+            return response
 
     def change_password(self, login: str, password: str, new_password: str, **kwargs):
         """

@@ -1,6 +1,8 @@
 import random
 import time
 from string import ascii_letters, digits
+
+import allure
 import pytest
 from hamcrest import assert_that, has_entries
 
@@ -13,6 +15,10 @@ def random_string(begin, end):
     return string
 
 
+@allure.suite("Тесты на проверку метода POST{host}/v1/account")
+@allure.sub_suite("Позитивные проверки")
+@allure.title("Проверка регистрации и активации пользователя на рандомных данных")
+@allure.step("Подготовка тестового пользователя")
 @pytest.mark.parametrize('login, email, password, status_code, check', [
     (random_string(5, 15),
      random_string(5, 15) + '@mail.com',
@@ -35,7 +41,7 @@ def random_string(begin, end):
      random_string(6, 20), 400, {"Email": ['Invalid']}
      ),
 ])
-def test_post_v1_account(dm_api_facade, dm_db, login, email, password, status_code, check):
+def test_post_v1_account(dm_api_facade, dm_db, login, email, password, status_code, check, assertion):
     dm_db.delete_user_by_login(login=login)
     dataset = dm_db.get_users_by_login(login=login)
     assert len(dataset) == 0
@@ -47,25 +53,11 @@ def test_post_v1_account(dm_api_facade, dm_db, login, email, password, status_co
         status_code=status_code
     )
     if status_code == 201:
-        dataset = dm_db.get_users_by_login(login=login)
-        for row in dataset:
-            assert_that(row, has_entries(
-                {
-                    'Login': login,
-                    'Activated': False
-
-                }
-            ))
-
+        assertion.check_user_was_created(login=login)
         # api.account.activate_registered_user(login=login)
         dm_db.activate_user_by_login(login=login)
-
         time.sleep(3)
-
-        dataset = dm_db.get_users_by_login(login=login)
-        for row in dataset:
-            assert row.Activated is True, f'User {login} not activated'
-
+        assertion.check_user_was_activated(login=login)
         token = dm_api_facade.login.get_auth_token(login=login, password=password)
         dm_api_facade.account.set_headers(headers=token)
         dm_api_facade.account.get_current_user_info()

@@ -1,3 +1,5 @@
+import allure
+
 from dm_api_account.models import LoginCredentials
 
 
@@ -21,13 +23,14 @@ class Login:
         :param remember_me: bool
         :return: response
         """
-        response = self.facade.login_api.post_v1_account_login(
-            json=LoginCredentials(
-                login=login,
-                password=password,
-                remember_me=remember_me
+        with allure.step("Авторизация пользователя"):
+            response = self.facade.login_api.post_v1_account_login(
+                json=LoginCredentials(
+                    login=login,
+                    password=password,
+                    remember_me=remember_me
+                )
             )
-        )
 
         return response
 
@@ -39,8 +42,9 @@ class Login:
         :param remember_me: bool
         :return:
         """
-        response = self.login_user(login=login, password=password, remember_me=remember_me)
-        return {'X-Dm-Auth-Token': response.headers['X-Dm-Auth-Token']}
+        with allure.step("Авторизация пользователя и получение авторизационного токена"):
+            response = self.login_user(login=login, password=password, remember_me=remember_me)
+            return {'X-Dm-Auth-Token': response.headers['X-Dm-Auth-Token']}
 
     def logout_user(self, **kwargs):
         """

@@ -1,7 +1,9 @@
-from hamcrest import assert_that, has_properties
-from dm_api_account.models.user_envelope import UserRole, Rating
+import allure
 
 
+@allure.suite("Тесты на проверку метода POST{host}/v1/account")
+@allure.sub_suite("Позитивные проверки")
+@allure.title("Проверка авторизации пользователя")
 def test_post_v1_account_login(dm_api_facade, prepare_user, status_code=201):
     """
     Authenticate via credentials
