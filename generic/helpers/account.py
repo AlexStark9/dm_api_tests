@@ -1,12 +1,14 @@
 import allure
-
-from dm_api_account.models import Registration, ChangePassword, ResetPassword
+from dm_api_account.models import *
+# try:
+#     from services.dm_api_account import Facade
+# except ImportError:
+#     ...
 
 
 class Account:
     def __init__(self, facade):
-        from services.dm_api_account import Facade
-        self.facade: Facade = facade
+        self.facade = facade
 
     def set_headers(self, headers):
         """

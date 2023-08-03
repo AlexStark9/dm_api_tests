@@ -1,7 +1,6 @@
 import random
 import time
 from string import ascii_letters, digits
-
 import allure
 import pytest
 from hamcrest import assert_that, has_entries
