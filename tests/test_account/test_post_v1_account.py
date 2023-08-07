@@ -4,6 +4,7 @@ from string import ascii_letters, digits
 import allure
 import pytest
 from hamcrest import assert_that, has_entries
+from generic.assertions.response_checker import check_status_code_http
 
 
 def random_string(begin, end):
@@ -45,12 +46,13 @@ def test_post_v1_account(dm_api_facade, dm_db, login, email, password, status_co
     dataset = dm_db.get_users_by_login(login=login)
     assert len(dataset) == 0
     dm_api_facade.mailhog.delete_all_messages()
-    response = dm_api_facade.account.register_new_user(
-        login=login,
-        email=email,
-        password=password,
-        status_code=status_code
-    )
+    with check_status_code_http(expected_status_code=status_code, expected_result=check):
+        dm_api_facade.account.register_new_user(
+            login=login,
+            email=email,
+            password=password
+        )
+
     if status_code == 201:
         assertion.check_user_was_created(login=login)
         # api.account.activate_registered_user(login=login)
@@ -58,7 +60,4 @@ def test_post_v1_account(dm_api_facade, dm_db, login, email, password, status_co
         time.sleep(3)
         assertion.check_user_was_activated(login=login)
         token = dm_api_facade.login.get_auth_token(login=login, password=password)
-        dm_api_facade.account.set_headers(headers=token)
-        dm_api_facade.account.get_current_user_info()
-    else:
-        assert_that(response.json()['errors'], has_entries(check))
+        dm_api_facade.account.get_current_user_info(x_dm_auth_token=token)

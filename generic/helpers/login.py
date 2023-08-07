@@ -1,11 +1,11 @@
 import allure
-
 from dm_api_account.models import *
 
 
 class Login:
     def __init__(self, facade):
-        self.facade = facade
+        from services.dm_api_account import Facade
+        self.facade: Facade = facade
 
     def set_headers(self, headers):
         """
@@ -24,8 +24,9 @@ class Login:
         :return: response
         """
         with allure.step("Авторизация пользователя"):
-            response = self.facade.login_api.post_v1_account_login(
-                json=LoginCredentials(
+            response = self.facade.login_api.v1_account_login_post(
+                _return_http_data_only=False,
+                login_credentials=LoginCredentials(
                     login=login,
                     password=password,
                     remember_me=remember_me
@@ -44,20 +45,22 @@ class Login:
         """
         with allure.step("Авторизация пользователя и получение авторизационного токена"):
             response = self.login_user(login=login, password=password, remember_me=remember_me)
-            return {'X-Dm-Auth-Token': response.headers['X-Dm-Auth-Token']}
+            return response[2]['X-Dm-Auth-Token']
 
-    def logout_user(self, **kwargs):
+    def logout_user(self, x_dm_auth_token: str, **kwargs):
         """
         Logout user
+        :param x_dm_auth_token: str
         :param kwargs: kwargs
         :return:
         """
-        return self.facade.login_api.delete_v1_account_login(**kwargs)
+        return self.facade.login_api.v1_account_login_delete(x_dm_auth_token=x_dm_auth_token, **kwargs)
 
-    def logout_user_from_all_devices(self, **kwargs):
+    def logout_user_from_all_devices(self, x_dm_auth_token: str, **kwargs):
         """
         Logout user from all devices
+        :param x_dm_auth_token: str
         :param kwargs: kwargs
         :return:
         """
-        return self.facade.login_api.delete_v1_account_login_all(**kwargs)
+        return self.facade.login_api.v1_account_login_all_delete(x_dm_auth_token=x_dm_auth_token, **kwargs)
