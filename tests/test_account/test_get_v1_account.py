@@ -22,4 +22,3 @@ def test_get_v1_account(dm_api_facade, prepare_user, dm_db, status_code=201):
     token = dm_api_facade.login.get_auth_token(login, password)
     dm_api_facade.account.set_headers(headers=token)
     dm_api_facade.account.get_current_user_info()
-    print(token['X-Dm-Auth-Token'])

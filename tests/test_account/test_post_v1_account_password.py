@@ -1,6 +1,6 @@
 import allure
 from hamcrest import assert_that, has_properties
-from dm_api_account.models.user_envelope import UserRole, Rating
+from apis.dm_api_account.models.user_envelope import UserRole, Rating
 import structlog
 
 structlog.configure(

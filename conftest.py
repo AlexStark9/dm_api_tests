@@ -4,11 +4,15 @@ import structlog
 from vyper import v
 from pathlib import Path
 from string import ascii_letters, digits
+from apis.dm_api_search_async import SearchEngineStub
 from generic.assertions.post_v1_account import AssertionsPostV1Account
 from generic.helpers.orm_db import OrmDatabase
+from generic.helpers.search import Search
 from services.dm_api_account import Facade
 from collections import namedtuple
 from generic.helpers.mailhog import MailhogApi
+from grpclib.client import Channel
+
 
 structlog.configure(
     processors=[
@@ -132,3 +136,18 @@ def pytest_addoption(parser):
     parser.addoption('--env', action='store', default='stg')
     for option in options:
         parser.addoption(f'--{option}', action='store', default=None)
+
+
+@pytest.fixture
+def grpc_search():
+    client = Search(target=v.get('service.dm_api_search'))
+    yield client
+    client.grpc_search.close()
+
+
+@pytest.fixture
+def grpc_search_async():
+    channel = Channel(host='5.63.153.31', port=5052)
+    client = SearchEngineStub(channel)
+    yield client
+    channel.close()

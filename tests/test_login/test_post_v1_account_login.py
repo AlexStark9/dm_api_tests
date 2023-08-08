@@ -26,15 +26,3 @@ def test_post_v1_account_login(dm_api_facade, prepare_user, status_code=201):
         login=login,
         password=password
     )
-    # Для метода post_v1_account_login возвращаем json
-    # assert_that(response.resource, has_properties(
-    #     {
-    #         "login": login,
-    #         "rating": Rating(
-    #             enabled=True,
-    #             quality=0,
-    #             quantity=0
-    #         ),
-    #         "roles": [UserRole.GUEST, UserRole.PLAYER]
-    #     }
-    # ))

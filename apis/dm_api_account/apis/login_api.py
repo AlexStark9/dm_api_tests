@@ -1,9 +1,8 @@
 import allure
 from requests import Response
-from rest_client.rest_client import Restclient
-from ..models import *
-from dm_api_account.utilities import validate_request_json, validate_status_code
-from ..models import UserEnvelope, GeneralError, BadRequestError
+from common_libs.rest_client.rest_client import Restclient
+from apis.dm_api_account.utilities import validate_request_json, validate_status_code
+from apis.dm_api_account.models import *
 
 
 class LoginApi:
