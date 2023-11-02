@@ -15,7 +15,7 @@
 
 ### Установка и запуск
 ```shell
- git clone https://github.com/ValeriyMenshikov/dm_api_tests
+ git clone https://github.com/AlexStark9/dm_api_tests.git
  cd dm_api_tests
  pip install -r requirements.txt
 ```
